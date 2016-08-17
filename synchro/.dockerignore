@@ -1,0 +1,4 @@
+Dockerfile
+init/Dockerfile
+init/node_modules/
+init/synchro-apps/node_modules/

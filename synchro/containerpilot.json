@@ -1,0 +1,13 @@
+{
+  "consul": "consul:8500",
+  "preStart": "/bin/prestart-synchro.sh",
+  "services": [
+    {
+      "name": "synchro",
+      "port": 80,
+      "health": "/usr/bin/curl -o /dev/null --fail -s http://localhost:80/health",
+      "poll": 10,
+      "ttl": 25
+    }
+  ]
+}

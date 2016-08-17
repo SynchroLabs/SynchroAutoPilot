@@ -1,0 +1,64 @@
+# Nginx as a load-balancing tier and reverse proxy, with caching and optional SSL termination
+nginx:
+    image: synchro/synchro_nginx_ap:1.0.0
+    mem_limit: 128m
+    ports:
+      - 80
+      - 443
+    links:
+      - consul
+      - stashbox
+    restart: always
+    command: >
+      /bin/containerpilot
+      -config file:///etc/containerpilot/containerpilot.json
+      nginx -g "daemon off;"
+    env_file: ./nginx.env
+    labels:
+        # Joyent: Setting the CNS service name (not needed unless running on Joyent and using CNS)
+      - triton.cns.services=synchro
+
+# The Synchro microservice
+synchro:
+    image: synchro/synchro_ap:1.5.4
+    links:
+      - redis
+      - consul
+      - stashbox
+    mem_limit: 512m
+    expose:
+      - 80
+    environment:
+    - SYNCHRO__PORT=80
+    - SYNCHRO__SESSIONSTORE_PACKAGE=synchro-api
+    - SYNCHRO__SESSIONSTORE_SERVICE=RedisSessionStore
+    - SYNCHRO__SESSIONSTORE__host=redis
+    - SYNCHRO__SESSIONSTORE__port=6379
+    env_file: ./synchro.env
+    restart: always
+
+# StashBox
+stashbox:
+    image: synchro/stashbox
+    mem_limit: 128m
+    expose:
+      - 80
+    env_file: ./stashbox.env
+
+# redis
+redis:
+    image: redis
+    mem_limit: 128m
+    expose:
+      - 6379
+
+# service discovery tier
+consul:
+    image: progrium/consul:latest
+    command: -server -bootstrap -ui-dir /ui
+    restart: always
+    mem_limit: 128m
+    expose:
+      - 8500
+    dns:
+      - 127.0.0.1
