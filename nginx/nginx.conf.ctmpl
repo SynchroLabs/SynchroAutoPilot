@@ -43,7 +43,7 @@ http {
         {{ if env "SSL" }}
         listen 443 ssl;
 
-        # https://www.ssllabs.com/ssltest/index.html
+        # Validate with https://www.ssllabs.com/ssltest/index.html
 
         ssl_certificate {{ or (env "SSL_CERTS_PATH") "/etc/ssl/certs/ssl.crt" }};
         ssl_certificate_key {{ or (env "SSL_KEY_PATH") "/etc/ssl/private/ssl.key" }};
@@ -52,6 +52,8 @@ http {
         ssl_session_timeout 180m;
 
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+        {{ if env "SSL_DH_PARAM_PATH" }}ssl_dhparam {{env "SSL_DH_PARAM_PATH"}};{{ end }}
 
         ssl_prefer_server_ciphers on;
         ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;

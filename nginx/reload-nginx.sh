@@ -37,6 +37,27 @@ preStart() {
         fi;
     fi;
 
+    # If SSL dh param is indicated, either populate it or generate it as appropriate
+    #
+    if [ -n "$SSL_DH_PARAM_PATH" ]; then
+        if [ -n "$SSL_DH_PARAM_BASE64" ]; then
+            echo "Decode SSL_DH_PARAM to $SSL_DH_PARAM_PATH"
+            echo $SSL_DH_PARAM_BASE64 | base64 -d > $SSL_DH_PARAM_PATH
+        elif [ -n "$SSL_DH_PARAM_URL" ]; then
+            echo "Download SSL DH param from url to $SSL_DH_PARAM_PATH"
+            curl $SSL_DH_PARAM_URL -s -S -f -o $SSL_DH_PARAM_PATH
+            if [ "$?" = "7" ]; then
+                echo "Connection refused, retrying in 5 seconds"
+                sleep 5
+                curl $SSL_DH_PARAM_URL -s -S -f -o $SSL_DH_PARAM_PATH
+            fi;
+        else
+            # Note: This can take a long time - between 15 seconds and couple of minutes depending on the machine
+            echo "Generating SSL DH param"
+            openssl dhparam 2048 -out $SSL_DH_PARAM_PATH
+        fi;
+    fi;
+
     # Get Nginx config template from remote URL, if so specified
     #
     if [ -n "$NGINX_CTMPL_URL" ]; then
