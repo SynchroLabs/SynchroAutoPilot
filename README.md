@@ -2,7 +2,7 @@
 
 This project is an implementation of the AutoPilot Pattern using ContainerPilot in support of the Synchro Server application.
 
-![StashBox](docs/SynchroWithStashboxJoyent.png)
+![StashBox](docs/SynchroWithStashbox.png)
 
 This project includes the container definition and support files for custom nginx and synchro deployments that are self-orchestrating using ContainerPilot.  For more information on the AutoPilot Pattern using ContainerPilot, see: https://www.joyent.com/containerpilot
 
