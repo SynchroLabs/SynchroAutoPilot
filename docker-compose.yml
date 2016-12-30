@@ -20,7 +20,7 @@ nginx:
 
 # The Synchro microservice
 synchro:
-    image: synchro/synchro_ap:1.5.4
+    image: synchro/synchro_ap:1.5.10
     links:
       - redis
       - consul
@@ -29,6 +29,7 @@ synchro:
     expose:
       - 80
     environment:
+    - SYNCHRO_CONFIG_URL=stashbox/config/config.json
     - SYNCHRO__PORT=80
     - SYNCHRO__SESSIONSTORE_PACKAGE=synchro-api
     - SYNCHRO__SESSIONSTORE_SERVICE=RedisSessionStore
@@ -39,7 +40,7 @@ synchro:
 
 # StashBox
 stashbox:
-    image: synchro/stashbox
+    image: synchro/stashbox_ap:1.1.1
     mem_limit: 128m
     expose:
       - 80

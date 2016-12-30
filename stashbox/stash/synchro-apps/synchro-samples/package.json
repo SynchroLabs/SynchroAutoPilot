@@ -1,0 +1,11 @@
+{
+  "name": "synchro-samples",
+  "version": "1.5.1",
+  "description": "Synchro API Samples",
+  "main": "menu",
+  "author": "Bob Dickinson <bob@synchro.io> (http://synchro.io/)",
+  "private": true,
+  "engines": { "synchro": ">= 1.5.0" },
+  "synchro": { "clientVersion": ">= 1.4.1" },
+  "synchroArchiveUrl": "https://github.com/SynchroLabs/SynchroSamples/archive/master.zip"
+}

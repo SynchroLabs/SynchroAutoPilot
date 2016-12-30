@@ -25,7 +25,7 @@ WORKDIR /usr/src/app
 # Install Synchro
 #
 RUN npm install -g synchro
-RUN synchro init -v 1.5.4 # to install specific version
+RUN synchro init -v 1.5.10 # to install specific version
 
 # OPTIONAL - Copy app config/source from Synchro installed in init/
 #

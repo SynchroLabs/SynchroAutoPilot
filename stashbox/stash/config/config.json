@@ -1,0 +1,7 @@
+{
+  "MODULESTORE_PACKAGE": "synchro-api",
+  "MODULESTORE_SERVICE": "StashboxModuleStore",
+  "MODULESTORE": {
+    "location": "http://stashbox/synchro-apps"
+  }
+}
