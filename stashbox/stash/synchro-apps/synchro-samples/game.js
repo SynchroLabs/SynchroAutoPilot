@@ -30,6 +30,9 @@ exports.View =
             ] },
             { control: "text", value: "Turns: {turnCount}, lights: {lights}", fontsize: "12", horizontalAlignment: "Center" }
         ] },
+
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+        { control: "text", value: "Each time you click a square, it toggles the lit state of that square and each horiontally or vertically adjacent square.  All game state is actually in a Synchro app running on the server.", width: "*" },
     ]
 }
 

@@ -40,7 +40,7 @@ synchro:
 
 # StashBox
 stashbox:
-    image: synchro/stashbox_ap:1.1.1
+    image: synchro/stashbox_ap:1.1.2
     mem_limit: 128m
     expose:
       - 80

@@ -19,7 +19,10 @@ exports.View =
                 { control: "text", value: "eval(140 - {text}.length)", foreground: "eval({text}.length <= 140 ? null : 'Red')", font: { bold: "eval({text}.length > 140)", size: 10 }, width: 70, verticalAlignment: "Center" },
                 { control: "button", caption: "Tweet", binding: "tweet", margin: { left: 10, right: 0 }, verticalAlignment: "Center", enabled: "eval({text}.length > 0 && {text}.length <= 140)" },
             ] },
-        ] }
+        ] },
+
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+        { control: "text", value: "This sample app demonstrates advanced Synchro data binding using 'eval'.  The 'characters left' value and color, and the enabled state of the 'Tweet' button are all udated without any round trip to the server.", width: "*" },
     ]
 }
 

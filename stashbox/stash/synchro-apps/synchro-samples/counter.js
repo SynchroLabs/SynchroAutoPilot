@@ -40,6 +40,9 @@ exports.View =
             },
             ]
         },
+
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+        { control: "text", value: "This sample app demonstrates updating a remote value.  Each time you click increment or decrement, the counter is updated in your Synchro app on the server.  This app demonstrates the round-trip performance of that kind of operation.", width: "*" },
     ]
 }
 
