@@ -1,5 +1,5 @@
 {
-  "consul": "consul:8500",
+  "consul": "{{ if .CONSUL_AGENT }}localhost{{ else }}{{ .CONSUL }}{{ end }}:8500",
   "preStart": "/bin/prestart-synchro.sh",
   "services": [
     {
@@ -9,5 +9,43 @@
       "poll": 10,
       "ttl": 25
     }
-  ]
+  ],
+  "backends": [
+    {
+      "name": "redis-sentinel",
+      "poll": 15,
+      "onChange": "pkill -SIGHUP node"
+    }
+  ],
+  "coprocesses": [{{ if .CONSUL_AGENT }}
+    {
+      "command": ["/usr/local/bin/consul", "agent",
+                  "-data-dir=/data",
+                  "-config-dir=/config",
+                  "-rejoin",
+                  "-retry-join", "{{ .CONSUL }}",
+                  "-retry-max", "10",
+                  "-retry-interval", "10s"],
+      "restarts": "unlimited"
+    }{{ end }}
+  ],
+  "telemetry": {
+    "port": 9090,
+    "sensors": [
+      {
+        "name": "synchro_memory_percent",
+        "help": "percentage of memory used",
+        "type": "gauge",
+        "poll": 5,
+        "check": ["/bin/sensor.sh", "memory"]
+      },
+      {
+        "name": "synchro_cpu_load",
+        "help": "cpu load",
+        "type": "gauge",
+        "poll": 5,
+        "check": ["/bin/sensor.sh", "cpu"]
+      }
+    ]
+  }
 }

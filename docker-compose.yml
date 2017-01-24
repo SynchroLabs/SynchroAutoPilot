@@ -1,65 +1,106 @@
+# By default, the value of CONSUL will come from the .env file in this directory and will direct the 
+# services below to use the single consul instance directly.  If you want to scale consul you should 
+# specify CONSUL_AGENT (with a truthy value) and you will also likely want to set the value of CONSUL
+# to an appropriate host (for example, when deploying on Joyent, you would want to set it to a host name
+# that Joyent CNS will resolve - see setup.sh in this directory).
+#
+
 # Nginx as a load-balancing tier and reverse proxy, with caching and optional SSL termination
 nginx:
-    image: synchro/synchro_nginx_ap:1.0.1
+    image: synchro/synchro_nginx_ap:1.0.2
     mem_limit: 128m
-    ports:
-      - 80
-      - 443
-    links:
-      - consul
-      - stashbox
-    restart: always
     command: >
       /bin/containerpilot
       -config file:///etc/containerpilot/containerpilot.json
       nginx -g "daemon off;"
-    env_file: ./nginx.env
+    restart: always
+    links:
+      - consul
+      - stashbox
+    ports:
+      - 80
+      - 443
+      - 9090
     labels:
         # Joyent: Setting the CNS service name (not needed unless running on Joyent and using CNS)
       - triton.cns.services=synchro
+    environment:
+      - CONSUL=${CONSUL}
+      - CONSUL_AGENT=${CONSUL_AGENT}
 
 # The Synchro microservice
 synchro:
-    image: synchro/synchro_ap:1.5.10
+    image: synchro/synchro_ap:1.5.14
+    mem_limit: 512m
+    restart: always
     links:
       - redis
       - consul
       - stashbox
-    mem_limit: 512m
     expose:
       - 80
+    ports:
+      - 9090
     environment:
-    - SYNCHRO_CONFIG_URL=stashbox/config/config.json
-    - SYNCHRO__PORT=80
-    - SYNCHRO__SESSIONSTORE_PACKAGE=synchro-api
-    - SYNCHRO__SESSIONSTORE_SERVICE=RedisSessionStore
-    - SYNCHRO__SESSIONSTORE__host=redis
-    - SYNCHRO__SESSIONSTORE__port=6379
-    env_file: ./synchro.env
-    restart: always
+      - SYNCHRO_CONFIG_URL=stashbox/config/config.json
+      - SYNCHRO__PORT=80
+      - SYNCHRO__SESSIONSTORE_PACKAGE=synchro-api
+      - SYNCHRO__SESSIONSTORE_SERVICE=IoRedisSessionStore
+      - SYNCHRO__SESSIONSTORE__sentinels=true
+      - SYNCHRO__SESSIONSTORE__consulRetries=5
+      - SYNCHRO__SESSIONSTORE__consulDelayMs=5000
+      - SYNCHRO__LOG4JS_CONFIG__levels__synchro-ioredis-session=DEBUG
+      - CONSUL=${CONSUL}
+      - CONSUL_AGENT=${CONSUL_AGENT}
 
 # StashBox
 stashbox:
-    image: synchro/stashbox_ap:1.1.2
+    image: synchro/stashbox_ap:1.1.3
     mem_limit: 128m
     expose:
       - 80
-    env_file: ./stashbox.env
 
 # redis
 redis:
-    image: redis
+    image: synchro/synchro_redis_ap:1.0.0
     mem_limit: 128m
+    restart: always
+    links:
+      - consul
     expose:
       - 6379
+      - 26379
+    labels:
+      - triton.cns.services=redis
+    environment:
+      - CONSUL=${CONSUL}
+      - CONSUL_AGENT=${CONSUL_AGENT}
 
 # service discovery tier
 consul:
     image: progrium/consul:latest
+    mem_limit: 128m
     command: -server -bootstrap -ui-dir /ui
     restart: always
-    mem_limit: 128m
     expose:
       - 8500
     dns:
       - 127.0.0.1
+    labels:
+      - triton.cns.services=consul
+
+# Prometheus is an open source performance monitoring tool
+# it is included here for demo purposes and is not required
+prometheus:
+    image: autopilotpattern/prometheus:latest
+    mem_limit: 1g
+    restart: always
+    links:
+      - consul
+    ports:
+      - 9090
+    labels:
+      - triton.cns.services=prometheus
+    environment:
+      - CONSUL=${CONSUL}
+      - CONSUL_AGENT=${CONSUL_AGENT}

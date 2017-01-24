@@ -1,0 +1,38 @@
+{
+  "consul": "localhost:8500",
+  "logging": {
+    "level": "DEBUG", 
+    "format": "default",
+    "output": "stdout"
+  },
+  "preStart": [ "/usr/local/bin/manage.sh", "preStart" ],
+  "preStop": [ "/usr/local/bin/manage.sh", "preStop" ],
+  "services": [
+    {
+      "name": "redis-replica",
+      "port": 6379,
+      "health": [ "/usr/local/bin/manage.sh", "health" ],
+      "poll": 5,
+      "ttl": 25
+    },
+    {
+      "name": "redis-sentinel",
+      "port": 26379,
+      "health": [ "/usr/local/bin/manage.sh", "healthSentinel" ],
+      "poll": 5,
+      "ttl": 25
+    }
+  ],
+  "coprocesses": [
+    {
+      "command": ["/usr/local/bin/consul", "agent",
+                  "-data-dir=/data",
+                  "-config-dir=/config",
+                  "-rejoin",
+                  "-retry-join", "{{ .CONSUL }}",
+                  "-retry-max", "10",
+                  "-retry-interval", "10s"],
+      "restarts": "unlimited"
+    }
+  ]
+}

@@ -7,6 +7,9 @@ exports.View =
     title: "Game of 15",
     elements:
     [
+        { control: "text", value: "Tap a tile to shift that tile, row, or column toward the empty space until all tiles are in order.  All game state is actually in a Synchro app running on the server.", width: "*" },
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+
         { control: "stackpanel", orientation: "Vertical", margin: 0, width: "*", contents: [
             { control: "text", value: "Put the Squares in Order", fontsize: 12, horizontalAlignment: "Center" },
             { control: "stackpanel", orientation: "Horizontal", margin: 0, horizontalAlignment: "Center", binding: { foreach: "board" }, contents: [
@@ -16,9 +19,6 @@ exports.View =
             ] },
             { control: "text", value: "Turns: {turnCount}", fontsize: "12", horizontalAlignment: "Center" }
         ] },
-
-        { control: "rectangle", width: "*", height: 5, color: "Black" },
-        { control: "text", value: "Tap a tile to shift that tile, row, or column toward the empty space until all tiles are in order.  All game state is actually in a Synchro app running on the server.", width: "*" },
     ]
 }
 

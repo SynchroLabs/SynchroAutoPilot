@@ -16,13 +16,13 @@ exports.View =
     title: "Auto-Complete",
     elements:
     [
+        { control: "text", value: "This sample leverages the ability to optionally update server state on any content change.  The auto-complete selections are computed and provided by the Synchro app running on the server every time the edit control value changes on the client.", width: "*" },
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+
         { control: "text", value: "Enter a State", fontsize: 12, margin: { bottom: 0 } },
         { control: "edit", binding: { value: "searchText", sync: "change" }, placeholder: "state name", width: 200 },
         { control: "listbox", width: 250, height: 300, select: "None", binding: { items: "suggestions",  onItemClick: { command: "suggestionSelected", suggestion: "{$data}" } }, visibility: "{suggestions}"},
         { control: "button", caption: "Check", width: 125, binding: "check" },
-
-        { control: "rectangle", width: "*", height: 5, color: "Black" },
-        { control: "text", value: "This sample leverages the ability to optionally update server state on any content change.  The auto-complete selections are computed and provided by the Synchro app running on the server every time the edit control value changes on the client.", width: "*" },
     ]
 }
 

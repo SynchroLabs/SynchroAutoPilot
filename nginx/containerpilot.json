@@ -1,5 +1,5 @@
 {
-  "consul": "consul:8500",
+  "consul": "{{ if .CONSUL_AGENT }}localhost{{ else }}{{ .CONSUL }}{{ end }}:8500",
   "preStart": "/bin/reload-nginx.sh preStart",
   "logging": {
     "level": "DEBUG",
@@ -21,5 +21,36 @@
       "poll": 3,
       "onChange": "/bin/reload-nginx.sh onChange"
     }
-  ]
+  ],
+  "coprocesses": [{{ if .CONSUL_AGENT }}
+    {
+      "command": ["/usr/local/bin/consul", "agent",
+                  "-data-dir=/data",
+                  "-config-dir=/config",
+                  "-rejoin",
+                  "-retry-join", "{{ .CONSUL }}",
+                  "-retry-max", "10",
+                  "-retry-interval", "10s"],
+      "restarts": "unlimited"
+    }{{ end }}
+  ],    
+  "telemetry": {
+    "port": 9090,
+    "sensors": [
+      {
+        "name": "synchro_nginx_connections_unhandled_total",
+        "help": "Number of accepted connections that were not handled",
+        "type": "gauge",
+        "poll": 5,
+        "check": ["/bin/sensor.sh", "unhandled"]
+      },
+      {
+        "name": "synchro_nginx_connections_load",
+        "help": "Ratio of active connections (less waiting) to the maximum worker connections",
+        "type": "gauge",
+        "poll": 5,
+        "check": ["/bin/sensor.sh", "connections_load"]
+      }
+    ]
+  }
 }

@@ -11,6 +11,9 @@ exports.View =
     title: "Twitter",
     elements:
     [
+        { control: "text", value: "This sample app demonstrates advanced Synchro data binding using 'eval'.  The 'characters left' value and color, and the enabled state of the 'Tweet' button are all udated without any round trip to the server.", width: "*" },
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+
         { control: "stackpanel", orientation: "Vertical", width: "440", contents: [
             { control: "text", value: "Enter Tweet", fontsize: 12, width: "*" },
             { control: "edit", multiline: true, placeholder: "enter tweet", width: "*", margin: { right: 0 }, lines: 3, binding: "text"},
@@ -20,9 +23,6 @@ exports.View =
                 { control: "button", caption: "Tweet", binding: "tweet", margin: { left: 10, right: 0 }, verticalAlignment: "Center", enabled: "eval({text}.length > 0 && {text}.length <= 140)" },
             ] },
         ] },
-
-        { control: "rectangle", width: "*", height: 5, color: "Black" },
-        { control: "text", value: "This sample app demonstrates advanced Synchro data binding using 'eval'.  The 'characters left' value and color, and the enabled state of the 'Tweet' button are all udated without any round trip to the server.", width: "*" },
     ]
 }
 

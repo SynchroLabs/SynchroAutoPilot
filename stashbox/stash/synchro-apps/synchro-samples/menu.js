@@ -26,8 +26,8 @@ exports.InitializeViewModel = function (context, session)
             { caption: "Click Counter", view: "counter", icon: "add_box" },
             { caption: "Lights Out", view: "game", icon: "lightbulb_outline" },
             { caption: "Game of 15", view: "game2", icon: "grid_on" },
-            { caption: "Movies", view: "react", icon: "movie" },
             { caption: "Auto-Complete", view: "autocomplete", icon: "spellcheck" },
+            { caption: "Movies", view: "react", icon: "movie" },
             { caption: "Contacts", view: "contacts", icon: "contacts" },
             { caption: "More Samples", view: "menu2", icon: "more_horiz" },
         ]

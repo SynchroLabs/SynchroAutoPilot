@@ -13,6 +13,9 @@ exports.View =
     title: "Click Counter",
     elements: 
     [
+        { control: "text", value: "This sample app demonstrates updating a remote value.  Each time you click increment or decrement, the counter is updated in your Synchro app on the server.  This app demonstrates the round-trip performance of that kind of operation.", width: "*" },
+        { control: "rectangle", width: "*", height: 5, color: "Black" },
+
         { control: "text", value: "Count: {count}", foreground: "{font.color}", font: { size: 24, bold: "{font.isBold}" } },
         { control: "button", caption: "Increment Count", binding: { command: "vary", amount: 1 } },
         { control: "button", caption: "Decrement Count", binding: { command: "vary", amount: -1 }, enabled: "{count}" },
@@ -40,16 +43,7 @@ exports.View =
             },
             ]
         },
-
-        { control: "rectangle", width: "*", height: 5, color: "Black" },
-        { control: "text", value: "This sample app demonstrates updating a remote value.  Each time you click increment or decrement, the counter is updated in your Synchro app on the server.  This app demonstrates the round-trip performance of that kind of operation.", width: "*" },
     ]
-}
-
-exports.InitializeView = function(context, session, viewModel, view)
-{
-    view.elements[0].value = "The count: {count}";
-    return view;
 }
 
 exports.InitializeViewModel = function(context, session)

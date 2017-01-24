@@ -1,0 +1,9 @@
+protected-mode no
+port 26379
+dir /tmp
+{{range service "redis"}}
+sentinel monitor mymaster {{.Address}} 6379 {{key_or_default "service/redis-sentinel/quorum" "2"}}
+{{else}}
+sentinel monitor mymaster {{env "MASTER_ADDRESS"}} 6379 {{key_or_default "service/redis-sentinel/quorum" "2"}}
+{{end}}
+sentinel failover-timeout mymaster {{key_or_default "service/redis-sentinel/failover-timeout" "30000"}}

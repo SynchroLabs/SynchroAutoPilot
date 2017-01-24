@@ -1,0 +1,1 @@
+This container heavily influenced by: https://github.com/Faithlife/redis-autopilot
