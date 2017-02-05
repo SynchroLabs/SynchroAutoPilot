@@ -12,9 +12,8 @@ help() {
     echo '  -p <project>    use this name as the project prefix for docker-compose'
 }
 
-
 # default values which can be overriden by -f or -p flags
-export COMPOSE_PROJECT_NAME=nginx
+export COMPOSE_PROJECT_NAME=synchro
 export COMPOSE_FILE=
 
 # give the docker remote api more time before timeout
@@ -97,8 +96,15 @@ check() {
         exit 1
     fi
 
-    echo CONSUL=consul.svc.${TRITON_ACCOUNT}.${TRITON_DC}.cns.joyent.com > .env
-    echo CONSUL_AGENT=1 > .env
+    # Create and populate docker-compose .env file (this will overwrite any existing .env file)
+    echo '# Environment variables for Triton' > triton.env
+
+    echo "COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}" >> triton.env
+    echo "TRITON_USER=${TRITON_USER}" >> triton.env
+    echo "TRITON_DC=${TRITON_DC}" >> triton.env
+    echo "TRITON_ACCOUNT=${TRITON_ACCOUNT}" >> triton.env
+
+    echo >> triton.env
 }
 
 # ---------------------------------------------------

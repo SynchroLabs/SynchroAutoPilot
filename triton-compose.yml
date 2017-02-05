@@ -1,4 +1,4 @@
-# docker-compose.yml - Run services on local host
+# triton-compose.yml - Run services on Triton
 #
 
 # Nginx as a load-balancing tier and reverse proxy, with caching and optional SSL termination
@@ -6,13 +6,14 @@ nginx:
     extends:
       file: common-services.yml
       service: nginx
-    ports:
-        - 8080:80
     links:
         - consul
         - stashbox
+    labels:
+        - triton.cns.services=${COMPOSE_PROJECT_NAME}
     environment:
-        - CONSUL=consul
+        - CONSUL_AGENT=1
+        - CONSUL=consul-${COMPOSE_PROJECT_NAME}.svc.${TRITON_ACCOUNT}.${TRITON_DC}.cns.joyent.com
 
 # The Synchro microservice
 synchro:
@@ -24,7 +25,8 @@ synchro:
         - consul
         - stashbox
     environment:
-        - CONSUL=consul
+        - CONSUL_AGENT=1
+        - CONSUL=consul-${COMPOSE_PROJECT_NAME}.svc.${TRITON_ACCOUNT}.${TRITON_DC}.cns.joyent.com
 
 # StashBox
 stashbox:
@@ -40,7 +42,8 @@ redis:
     links:
         - consul
     environment:
-        - CONSUL=consul
+        - CONSUL_AGENT=1
+        - CONSUL=consul-${COMPOSE_PROJECT_NAME}.svc.${TRITON_ACCOUNT}.${TRITON_DC}.cns.joyent.com
 
 # Prometheus performance monitoring
 prometheus:
@@ -49,11 +52,16 @@ prometheus:
       service: prometheus
     links:
         - consul
+    labels:
+        - triton.cns.services=prometheus-${COMPOSE_PROJECT_NAME}
     environment:
-        - CONSUL=consul
+        - CONSUL_AGENT=1
+        - CONSUL=consul-${COMPOSE_PROJECT_NAME}.svc.${TRITON_ACCOUNT}.${TRITON_DC}.cns.joyent.com
 
 # service discovery tier
 consul:
     extends:
       file: common-services.yml
       service: consul
+    labels:
+        - triton.cns.services=consul-${COMPOSE_PROJECT_NAME}
