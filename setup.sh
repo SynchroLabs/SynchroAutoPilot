@@ -13,7 +13,7 @@ help() {
 }
 
 # default values which can be overriden by -f or -p flags
-export COMPOSE_PROJECT_NAME=synchro
+export COMPOSE_PROJECT_NAME=
 export COMPOSE_FILE=
 
 # give the docker remote api more time before timeout
@@ -99,7 +99,9 @@ check() {
     # Create and populate docker-compose .env file (this will overwrite any existing .env file)
     echo '# Environment variables for Triton' > triton.env
 
-    echo "COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}" >> triton.env
+    if [ -n "$COMPOSE_PROJECT_NAME" ]; then
+        echo "COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}" >> triton.env
+    fi
     echo "TRITON_USER=${TRITON_USER}" >> triton.env
     echo "TRITON_DC=${TRITON_DC}" >> triton.env
     echo "TRITON_ACCOUNT=${TRITON_ACCOUNT}" >> triton.env
